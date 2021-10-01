@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import com.android.callreceiver.R
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -23,6 +25,9 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupViews(){
         back.setOnClickListener{ finish() }
+        viewListener.setOnClickListener {
+            hideKeyBoard()
+        }
         url.setText(preferences!!.getString(urlPref, ""))
         secretKey.setText(preferences!!.getString(secretKeyPref, ""))
     }
@@ -33,5 +38,15 @@ class SettingsActivity : AppCompatActivity() {
             .putString(urlPref, url.text.toString())
             .putString(secretKeyPref, secretKey.text.toString())
             .apply()
+    }
+    private fun hideKeyBoard(){
+        val view=this.currentFocus
+        if (view!=null){
+            val hideBoard=getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            hideBoard.hideSoftInputFromWindow(view.windowToken,0)
+        }
+        else{
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        }
     }
 }
